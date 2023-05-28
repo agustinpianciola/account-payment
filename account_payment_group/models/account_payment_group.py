@@ -23,7 +23,7 @@ class AccountPaymentGroup(models.Model):
         states={'draft': [('readonly', False)]},
         auto_join=True,
         check_company=True,
-        compute='_compute_receiptbook',
+        #compute='_compute_receiptbook',
         store=True,
     )
     document_type_id = fields.Many2one(
@@ -570,14 +570,14 @@ class AccountPaymentGroup(models.Model):
                     seq_date = sequence._create_date_range_seq(dt)
                 payment.next_number = seq_date.number_next_actual
 
-    @api.depends('company_id', 'partner_type')
-    def _compute_receiptbook(self):
-        for rec in self.filtered(lambda x: not x.receiptbook_id or x.receiptbook_id.company_id != x.company_id):
-            partner_type = self.partner_type or self._context.get(
-                'partner_type', self._context.get('default_partner_type', False))
-            receiptbook = self.env[
-                'account.payment.receiptbook'].search([
-                    ('partner_type', '=', partner_type),
-                    ('company_id', '=', self.company_id.id),
-                ], limit=1)
-            rec.receiptbook_id = receiptbook
+ #   @api.depends('company_id', 'partner_type')
+ #   def _compute_receiptbook(self):
+ #       for rec in self.filtered(lambda x: not x.receiptbook_id or x.receiptbook_id.company_id != x.company_id):
+ #           partner_type = self.partner_type or self._context.get(
+ #               'partner_type', self._context.get('default_partner_type', False))
+ #           receiptbook = self.env[
+ #               'account.payment.receiptbook'].search([
+ #                   ('partner_type', '=', partner_type),
+ #                   ('company_id', '=', self.company_id.id),
+ #               ], limit=1)
+ #           rec.receiptbook_id = receiptbook
